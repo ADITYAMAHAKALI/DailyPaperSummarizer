@@ -89,7 +89,13 @@ class PaperExtractor:
 
             # Find the PDF link
             pdf_link_element = None
-            for a_tag in soup.find_all('a', class_='btn inline-flex h-9 items-center'):
+            # The PDF button uses multiple CSS classes. Using `find_all` with
+            # a single class string requires an exact match of the class
+            # attribute, which is brittle because the order of classes in HTML
+            # is not guaranteed and extra classes may be added. Use a CSS
+            # selector instead so that elements containing all of the expected
+            # classes are matched regardless of order or additional classes.
+            for a_tag in soup.select('a.btn.inline-flex.h-9.items-center'):
                 if 'View PDF' in a_tag.get_text():
                     pdf_link_element = a_tag
                     break
